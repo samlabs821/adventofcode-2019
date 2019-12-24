@@ -61,9 +61,7 @@ func main() {
 	for _, v := range a {
 		sumWithFuel += calculateFuelForMass(v)
 	}
-
 	fmt.Printf("sum: %d -- sum with fuel: %d \n", int(sum), int(sumWithFuel))
-
 }
 
 func calculateFuelForMass(mass float64) float64 {
