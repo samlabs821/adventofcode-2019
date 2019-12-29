@@ -1,50 +1,76 @@
 package main
 
 import (
-	"fmt"
+	"flag"
+	"io/ioutil"
+	"strconv"
+	"strings"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-const (
-	Add      int64 = 1
-	Multiply int64 = 2
-	End      int64 = 99
-)
-
-var result []int64
-
-type Program struct {
-	OP     int64
-	A      int
-	B      int
-	Result int
-}
+var debug = flag.Bool("debug", false, "enable debug")
 
 func main() {
-	in, err := scanFile("input.txt")
-	checkFatal(err)
-	result = in
 
-	pgs := make([]Program, 0)
+	flag.Parse()
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-	for i := 0; i < len(in); i = i + 4 {
-		if in[i] == Add || in[i] == Multiply {
-			p := Program{
-				OP:     in[i],
-				A:      i + 1,
-				B:      i + 2,
-				Result: i + 3,
-			}
-			pgs = append(pgs, p)
-		} else if in[i] == End {
-			break
-		}
+	if *debug {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}
 
-	for _, v := range pgs {
-		fmt.Println(v)
+	bytes, err := ioutil.ReadFile("input.txt")
+	if err != nil {
+		return
+	}
+
+	contents := string(bytes[:len(bytes)-2])
+	split := strings.Split(contents, ",")
+	tape := make([]int, len(split))
+
+	for i, s := range split {
+		n, _ := strconv.Atoi(s)
+		tape[i] = n
+	}
+
+	for _, n := range tape {
+		log.Debug().Msgf("%d ", n)
+	}
+
+	// init
+	tape[1] = 12
+	tape[2] = 2
+
+	offset := 0
+	for {
+		if offset >= len(tape) {
+			info("offset if bigger than tape length")
+			return
+		}
+
+		if tape[offset] == 99 {
+			log.Info().Msgf("0 index: %d. exited normally", tape[0])
+			return
+		}
+
+		a := tape[offset+1]
+		b := tape[offset+2]
+		dstOffset := tape[offset+3]
+
+		switch tape[offset] {
+		case 1:
+			tape[dstOffset] = tape[a] + tape[b]
+		case 2:
+			tape[dstOffset] = tape[a] * tape[b]
+		default:
+			info("strange opcode")
+		}
+		offset += 4
 	}
 }
 
-func Calculate(res []int64, programs []Program) []int64 {
-	return nil
+func info(msg string) {
+	log.Info().Msg(msg)
 }
