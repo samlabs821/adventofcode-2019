@@ -53,7 +53,7 @@ func main() {
 
 			switch step[0] {
 			case 'R':
-				for n := 0; n < distance; n++ {
+				for n := 1; n <= distance; n++ {
 					loc.X++
 					hits := hit[loc]
 					if hits[i] != float64(0) {
@@ -64,7 +64,7 @@ func main() {
 					hit[loc] = hits
 				}
 			case 'L':
-				for n := 0; n < distance; n++ {
+				for n := 1; n <= distance; n++ {
 					loc.X--
 					hits := hit[loc]
 					if hits[i] != float64(0) {
@@ -75,7 +75,7 @@ func main() {
 					hit[loc] = hits
 				}
 			case 'U':
-				for n := 0; n < distance; n++ {
+				for n := 1; n <= distance; n++ {
 					loc.Y++
 					hits := hit[loc]
 					if hits[i] != float64(0) {
@@ -86,7 +86,7 @@ func main() {
 					hit[loc] = hits
 				}
 			case 'D':
-				for n := 0; n < distance; n++ {
+				for n := 1; n <= distance; n++ {
 					loc.Y--
 					hits := hit[loc]
 					if hits[i] != float64(0) {
